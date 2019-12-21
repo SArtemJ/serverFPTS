@@ -1,0 +1,3 @@
+//go:generate go-bindata -prefix "sql/" -pkg bindata -o ./bindata/bindata.go sql/...
+
+package main

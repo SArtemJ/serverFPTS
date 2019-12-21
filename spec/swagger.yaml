@@ -1,0 +1,187 @@
+swagger: '2.0'
+info:
+  version: "1.0.0"
+  title: FPTS
+  description: |
+    #### FPTS API
+schemes:
+  - http
+host: "some.fpts.lan"
+basePath: /
+
+parameters:
+  source-type:
+    name: Source-Type
+    in: header
+    description: "source-type value"
+    type: string
+    required: true
+
+paths:
+  /transaction:
+    post:
+      parameters:
+        - $ref: "#/parameters/source-type"
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            allOf:
+              - $ref: "#/definitions/Transaction_object"
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      responses:
+        200:
+          $ref: "#/responses/Transaction_response_200"
+        400:
+          $ref: "#/responses/Base_response_400"
+        404:
+          $ref: "#/responses/Base_response_404"
+        405:
+          $ref: "#/responses/Base_response_405"
+        500:
+          $ref: "#/responses/Base_response_500"
+
+
+responses:
+  Transaction_response_200:
+    description: "Transaction result"
+    schema:
+      allOf:
+        - $ref: "#/definitions/Success_data"
+        - type: object
+          properties:
+            data:
+              type: object
+              allOf:
+                - $ref: "#/definitions/Transaction_object"
+          required:
+            - data
+
+  Base_response_400:
+    description: "Invalid transactionID"
+    schema:
+      allOf:
+        - $ref: "#/definitions/Error_400_data"
+        - type: object
+          properties:
+            message:
+              type: string
+              example: "TransactionID already exist"
+            errors:
+              type: object
+              properties:
+                transactionID:
+                  type: string
+          required:
+            - message
+            - errors
+
+  Base_response_404:
+    description: "Not found"
+    schema:
+      allOf:
+        - $ref: "#/definitions/Error_404_data"
+
+  Base_response_405:
+    description: "Invalid Method"
+    schema:
+      allOf:
+        - $ref: "#/definitions/Error_405_data"
+
+  Base_response_500:
+    description: "Internal server error"
+    schema:
+      allOf:
+        - $ref: "#/definitions/Error_500_data"
+
+definitions:
+  Success_data:
+    description: Done
+    type: object
+    title: Success_data
+    properties:
+      message:
+        type: string
+        example: "SUCCESS"
+    required:
+      - message
+
+  Error_400_data:
+    allOf:
+      - type: object
+        title: Error_Error_400_data
+        properties:
+          message:
+            type: string
+            example: "Validation error"
+          errors:
+            type: array
+            items: {}
+        required:
+          - message
+          - errors
+
+  Error_404_data:
+    allOf:
+      - type: object
+        title: Error_Error_404_data
+        properties:
+          message:
+            type: string
+            example: "Not found"
+          errors:
+            type: array
+            items: {}
+            example: null
+        required:
+          - message
+          - errors
+
+  Error_405_data:
+    allOf:
+      - type: object
+        title: Error_Error_405_data
+        properties:
+          message:
+            type: string
+            example: "Method ${METHOD} not allowed"
+          errors:
+            example: null
+
+  Error_500_data:
+    allOf:
+      - type: object
+        title: Error_500_data
+        properties:
+          message:
+            type: string
+            example: "Internal server error"
+          errors:
+            example: null
+        required:
+          - message
+          - errors
+
+  Transaction_object:
+    title: Transaction_object
+    properties:
+      transactionID:
+        type: string
+        description: "transactionID"
+        example: "a3190bfc-593c-49c4-95b1-82e91ec3d022"
+      state:
+        type: string
+        description: "state"
+        example: "win"
+      amount:
+        type: string
+        description: "amount"
+        example: "10.15"
+    required:
+      - transactionID
+      - state
+      - amount

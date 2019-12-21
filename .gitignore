@@ -1,0 +1,10 @@
+
+# Default ignored files
+/workspace.xml
+config.*
+bin
+data
+.idea/
+vendor
+bindata/bindata.go
+./serverFPTS

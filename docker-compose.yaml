@@ -1,0 +1,54 @@
+version: "3"
+networks:
+  server_fpts:
+
+services:
+  db_test_data:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: db_test_data
+    networks:
+      - server_fpts
+    depends_on:
+      - db_postgres
+    environment:
+      - FPTS_DB_HOST=db_postgres
+      - FPTS_DB_PORT=5432
+      - FPTS_DB_LOGIN=top
+      - FPTS_DB_PASSWORD=secret
+      - FPTS_DB_NAME=fpts
+    ports:
+      - 8585:8585
+    command: db testdata
+
+  server_fptsapi:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: server_fpts_api
+    networks:
+      - server_fpts
+    depends_on:
+      - db_postgres
+    environment:
+      - FPTS_HTTP_HOST=0.0.0.0
+      - FPTS_HTTP_PORT=8585
+      - FPTS_DB_HOST=db
+      - FPTS_DB_PORT=26257
+      - FPTS_DB_NAME=fpts
+      - FPTS_DB_LOGIN=top
+      - FPTS_DB_PASSWORD=secret
+    ports:
+      - 8099:8099
+
+  db_postgres:
+    image: postgres
+    restart: always
+    networks:
+      - server_fpts
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: top
+      POSTGRES_PASSWORD: secret
