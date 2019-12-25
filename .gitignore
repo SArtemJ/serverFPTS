@@ -6,5 +6,4 @@ bin
 data
 .idea/
 vendor
-bindata/bindata.go
 ./serverFPTS
