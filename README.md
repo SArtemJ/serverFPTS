@@ -16,6 +16,7 @@
 
 > `Avaliable flags`
 ````
+      --cleaner              use background cleaner transactions - (default true)
   -c, --config string        Config file path
       --db.host string       Database server host
       --db.login string      Database login
@@ -25,8 +26,13 @@
   -h, --help                 help for fpts
       --http.host string     API host
       --http.port int        API port
-      --limit.clean int      limit last transactions - default 3 (default 3)
+      --limit.clean int      limit last transactions -(default 3)
       --log.fmt string       log format json or text
+      --log.level string     log level (default "DEBUG")
+      --logger.file string   stdout or file (default "STDOUT")
+      --timer.period int     timer period - (default 5)
+      --timer.type string    s-seconds/m-minutes/h-hours - (default "m")
+
 ````
 
 > `Send post Request on webserver`

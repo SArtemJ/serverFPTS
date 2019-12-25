@@ -101,8 +101,7 @@ func init() {
     "Response_object": {
       "title": "Response_object",
       "required": [
-        "userGUID",
-        "wallet"
+        "userGUID"
       ],
       "properties": {
         "amount": {
@@ -342,8 +341,7 @@ func init() {
     "Response_object": {
       "title": "Response_object",
       "required": [
-        "userGUID",
-        "wallet"
+        "userGUID"
       ],
       "properties": {
         "amount": {

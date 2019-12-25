@@ -1,4 +1,4 @@
-package configure
+package configureApp
 
 import (
 	"errors"
@@ -55,9 +55,10 @@ func configureDb(cmd *cobra.Command) {
 }
 
 func configureTimer(cmd *cobra.Command) {
-	cmd.Flags().String("timer.type", "m", "s-seconds/m-minutes/h-hours - default m")
-	cmd.Flags().Int64("timer.period", 1, "timer period - default 1 minute")
-	cmd.Flags().Int64("limit.clean", 3, "limit last transactions - default 3")
+	cmd.Flags().Bool("cleaner", true, "use background cleaner transactions ")
+	cmd.Flags().String("timer.type", "m", "s-seconds/m-minutes/h-hours")
+	cmd.Flags().Int64("timer.period", 5, "timer period")
+	cmd.Flags().Int64("limit.clean", 3, "limit last transactions")
 }
 
 func logFormat(cmd *cobra.Command) {

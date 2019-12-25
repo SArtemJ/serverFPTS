@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"github.com/SArtemJ/serverFPTS/api/restapi"
 	"github.com/SArtemJ/serverFPTS/api/restapi/operations"
-	"github.com/SArtemJ/serverFPTS/calculate"
-	"github.com/SArtemJ/serverFPTS/configure"
+	"github.com/SArtemJ/serverFPTS/calculator"
+	"github.com/SArtemJ/serverFPTS/configureApp"
 	"github.com/SArtemJ/serverFPTS/dbdriver"
 	"github.com/SArtemJ/serverFPTS/repository/postgresql"
 	"github.com/go-openapi/loads"
@@ -26,9 +26,9 @@ var rootCmd = &cobra.Command{
 	Long:  `forPTS`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		err := configure.Validate(
-			configure.ServiceHttp,
-			configure.ServiceDb,
+		err := configureApp.Validate(
+			configureApp.ServiceHttp,
+			configureApp.ServiceDb,
 		)
 		if err != nil {
 			logrus.Fatal(err)
@@ -56,11 +56,11 @@ func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "Config file path")
 
-	err := configure.NewConfigure(rootCmd,
-		configure.ServiceHttp,
-		configure.ServiceDb,
-		configure.Timer,
-		configure.LogFormat,
+	err := configureApp.NewConfigure(rootCmd,
+		configureApp.ServiceHttp,
+		configureApp.ServiceDb,
+		configureApp.Timer,
+		configureApp.LogFormat,
 	)
 
 	if err != nil {
@@ -84,18 +84,7 @@ func initConfig() {
 func startAPI(db *sql.DB) {
 	repos := postgresql.GetRepositories(db)
 
-	timer := SetTimerLimitValues()
-
-	var limitForBackground int64
-	if viper.GetInt("limit.clean") != 0 {
-		limitForBackground = viper.GetInt64("limit.clean")
-	} else {
-		limitForBackground = 3
-	}
-	calc := calculate.NewWalletCalculate(repos, limitForBackground, timer)
-
 	restapi.Repos = repos
-	restapi.Calc = calc
 
 	swaggerSpec, err := loads.Embedded(restapi.SwaggerJSON, restapi.FlatSwaggerJSON)
 	if err != nil {
@@ -109,7 +98,19 @@ func startAPI(db *sql.DB) {
 	server.Host = viper.GetString("HTTP.Host")
 	server.Port = viper.GetInt("HTTP.Port")
 
-	go calc.BackgroundWork()
+	if viper.GetBool("cleaner") {
+		timer := SetTimerLimitValues()
+
+		var limitForBackground int64
+		if viper.GetInt("limit.clean") != 0 {
+			limitForBackground = viper.GetInt64("limit.clean")
+		} else {
+			limitForBackground = 3
+		}
+
+		bw := calculator.NewBackgroundWorker(repos, limitForBackground, timer)
+		go bw.Run()
+	}
 
 	server.ConfigureAPI()
 	if err := server.Serve(); err != nil {

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"github.com/SArtemJ/serverFPTS/api/models"
 	"github.com/SArtemJ/serverFPTS/api/restapi/operations"
-	"github.com/SArtemJ/serverFPTS/calculate"
+	"github.com/SArtemJ/serverFPTS/calculator"
 	"github.com/SArtemJ/serverFPTS/repository"
 	"github.com/SArtemJ/serverFPTS/utils"
 	"github.com/go-openapi/runtime/middleware"
@@ -15,20 +15,21 @@ import (
 )
 
 type TransactionHandlers struct {
-	repos *repository.Repositories
-	calc  *calculate.WalletCalculate
+	repos      *repository.Repositories
+	calculator *calculator.WalletCalculator
 }
 
-func NewTransactionHandlers(repos *repository.Repositories, calc *calculate.WalletCalculate) *TransactionHandlers {
+func NewTransactionHandlers(repos *repository.Repositories) *TransactionHandlers {
 	return &TransactionHandlers{
 		repos: repos,
-		calc:  calc,
 	}
 }
 
 var Action = "Post Transaction Request"
 
 func (th *TransactionHandlers) NewPostTransaction(params operations.PostTransactionParams) middleware.Responder {
+
+	th.calculator = calculator.NewWalletCalculator()
 	//check source type
 	sourceBuilder := repository.NewSourceQuery()
 	if params.SourceType != "" {
@@ -73,13 +74,13 @@ func (th *TransactionHandlers) NewPostTransaction(params operations.PostTransact
 		BadRequestPayload(err)
 	}
 
-	//if all ok calculate wallet
+	//if all ok calculator wallet
 	transactionIn, err := WebTransactionToDb(params.Body.TransactionObject, null.StringFrom(params.SourceType))
 	if err != nil || transactionIn == nil {
 		return InternalServerErrorPayload(err)
 	}
 
-	userWallet, err := th.calc.DoPostEvent(userFromDb.Wallet.Int64, transactionIn.Amount.Int64, transactionIn.State.String)
+	userWallet, err := th.calculator.Calculate(userFromDb.Wallet.Int64, transactionIn.Amount.Int64, transactionIn.State.String)
 	if err != nil {
 		return InternalServerErrorPayload(err)
 	}
@@ -101,8 +102,7 @@ func (th *TransactionHandlers) NewPostTransaction(params operations.PostTransact
 	data := new(models.PostTransactionOKBodyAllOf1Data)
 	data.UserGUID = params.Body.UserGUID
 	w := utils.AmountWalletRuleExtract(userFromDb.Wallet.Int64)
-	ws := cast.ToString(w)
-	data.Wallet = &ws
+	data.Wallet = cast.ToString(w)
 	data.Amount = cast.ToString(utils.AmountWalletRuleExtract(transactionIn.Amount.Int64))
 	data.State = transactionIn.State.String
 

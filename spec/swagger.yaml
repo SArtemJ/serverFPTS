@@ -162,4 +162,3 @@ definitions:
         example: "100.15"
     required:
       - userGUID
-      - wallet

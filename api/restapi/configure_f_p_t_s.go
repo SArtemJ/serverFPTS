@@ -5,7 +5,6 @@ package restapi
 import (
 	"crypto/tls"
 	"github.com/SArtemJ/serverFPTS/api/handlers"
-	"github.com/SArtemJ/serverFPTS/calculate"
 	"github.com/SArtemJ/serverFPTS/repository"
 	"net/http"
 
@@ -17,14 +16,13 @@ import (
 //go:generate swagger generate server --target ../../api --name FPTS --spec ../../spec/swagger.yaml --exclude-main
 
 var Repos *repository.Repositories
-var Calc *calculate.WalletCalculate
 
 func configureFlags(api *operations.FPTSAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
 }
 
 func configureAPI(api *operations.FPTSAPI) http.Handler {
-	// configure the api here
+	// configureApp the api here
 	api.ServeError = errors.ServeError
 
 	// Set your custom logger if needed. Default one is log.Printf
@@ -36,7 +34,7 @@ func configureAPI(api *operations.FPTSAPI) http.Handler {
 	api.JSONConsumer = runtime.JSONConsumer()
 	api.JSONProducer = runtime.JSONProducer()
 
-	th := handlers.NewTransactionHandlers(Repos, Calc)
+	th := handlers.NewTransactionHandlers(Repos)
 	api.PostTransactionHandler = operations.PostTransactionHandlerFunc(th.NewPostTransaction)
 
 	api.ServerShutdown = func() {}

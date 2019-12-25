@@ -29,8 +29,7 @@ type ResponseObject struct {
 	UserGUID *strfmt.UUID `json:"userGUID"`
 
 	// wallet info
-	// Required: true
-	Wallet *string `json:"wallet"`
+	Wallet string `json:"wallet,omitempty"`
 }
 
 // Validate validates this response object
@@ -38,10 +37,6 @@ func (m *ResponseObject) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateUserGUID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateWallet(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -58,15 +53,6 @@ func (m *ResponseObject) validateUserGUID(formats strfmt.Registry) error {
 	}
 
 	if err := validate.FormatOf("userGUID", "body", "uuid", m.UserGUID.String(), formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *ResponseObject) validateWallet(formats strfmt.Registry) error {
-
-	if err := validate.Required("wallet", "body", m.Wallet); err != nil {
 		return err
 	}
 
