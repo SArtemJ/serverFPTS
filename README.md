@@ -1,6 +1,5 @@
 ### serverFPTS
 
-#####Usage:
 > Run with docker:
 - `docker-compose up db` to build clean db container
 - `docker-compose up init_db` to init db schema
@@ -44,3 +43,7 @@ curl --location --request POST 'http://localhost:8099/transaction' \
   	"userGUID": "aa4d02cb-2ca9-4e34-8b39-5e49559c1136"
   }'
 ````
+
+> `For local build`
+- `go generate`
+- `go build -o fpts .`
