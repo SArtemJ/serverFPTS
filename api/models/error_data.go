@@ -12,29 +12,29 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// Error400Data error 400 data
-// swagger:model Error_400_data
-type Error400Data struct {
-	Error400DataAllOf0
+// ErrorData error data
+// swagger:model Error_data
+type ErrorData struct {
+	ErrorDataAllOf0
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
-func (m *Error400Data) UnmarshalJSON(raw []byte) error {
+func (m *ErrorData) UnmarshalJSON(raw []byte) error {
 	// AO0
-	var aO0 Error400DataAllOf0
+	var aO0 ErrorDataAllOf0
 	if err := swag.ReadJSON(raw, &aO0); err != nil {
 		return err
 	}
-	m.Error400DataAllOf0 = aO0
+	m.ErrorDataAllOf0 = aO0
 
 	return nil
 }
 
 // MarshalJSON marshals this object to a JSON structure
-func (m Error400Data) MarshalJSON() ([]byte, error) {
+func (m ErrorData) MarshalJSON() ([]byte, error) {
 	_parts := make([][]byte, 0, 1)
 
-	aO0, err := swag.WriteJSON(m.Error400DataAllOf0)
+	aO0, err := swag.WriteJSON(m.ErrorDataAllOf0)
 	if err != nil {
 		return nil, err
 	}
@@ -43,12 +43,12 @@ func (m Error400Data) MarshalJSON() ([]byte, error) {
 	return swag.ConcatJSON(_parts...), nil
 }
 
-// Validate validates this error 400 data
-func (m *Error400Data) Validate(formats strfmt.Registry) error {
+// Validate validates this error data
+func (m *ErrorData) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	// validation for a type composition with Error400DataAllOf0
-	if err := m.Error400DataAllOf0.Validate(formats); err != nil {
+	// validation for a type composition with ErrorDataAllOf0
+	if err := m.ErrorDataAllOf0.Validate(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -59,7 +59,7 @@ func (m *Error400Data) Validate(formats strfmt.Registry) error {
 }
 
 // MarshalBinary interface implementation
-func (m *Error400Data) MarshalBinary() ([]byte, error) {
+func (m *ErrorData) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -67,8 +67,8 @@ func (m *Error400Data) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *Error400Data) UnmarshalBinary(b []byte) error {
-	var res Error400Data
+func (m *ErrorData) UnmarshalBinary(b []byte) error {
+	var res ErrorData
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

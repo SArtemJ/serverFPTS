@@ -13,21 +13,21 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// Error500DataAllOf0 Error_500_data
-// swagger:model error500DataAllOf0
-type Error500DataAllOf0 struct {
+// ErrorDataAllOf0 error data all of0
+// swagger:model errorDataAllOf0
+type ErrorDataAllOf0 struct {
 
 	// errors
 	// Required: true
-	Errors interface{} `json:"errors"`
+	Errors *string `json:"errors"`
 
 	// message
 	// Required: true
 	Message *string `json:"message"`
 }
 
-// Validate validates this error500 data all of0
-func (m *Error500DataAllOf0) Validate(formats strfmt.Registry) error {
+// Validate validates this error data all of0
+func (m *ErrorDataAllOf0) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateErrors(formats); err != nil {
@@ -44,7 +44,7 @@ func (m *Error500DataAllOf0) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Error500DataAllOf0) validateErrors(formats strfmt.Registry) error {
+func (m *ErrorDataAllOf0) validateErrors(formats strfmt.Registry) error {
 
 	if err := validate.Required("errors", "body", m.Errors); err != nil {
 		return err
@@ -53,7 +53,7 @@ func (m *Error500DataAllOf0) validateErrors(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Error500DataAllOf0) validateMessage(formats strfmt.Registry) error {
+func (m *ErrorDataAllOf0) validateMessage(formats strfmt.Registry) error {
 
 	if err := validate.Required("message", "body", m.Message); err != nil {
 		return err
@@ -63,7 +63,7 @@ func (m *Error500DataAllOf0) validateMessage(formats strfmt.Registry) error {
 }
 
 // MarshalBinary interface implementation
-func (m *Error500DataAllOf0) MarshalBinary() ([]byte, error) {
+func (m *ErrorDataAllOf0) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -71,8 +71,8 @@ func (m *Error500DataAllOf0) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *Error500DataAllOf0) UnmarshalBinary(b []byte) error {
-	var res Error500DataAllOf0
+func (m *ErrorDataAllOf0) UnmarshalBinary(b []byte) error {
+	var res ErrorDataAllOf0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

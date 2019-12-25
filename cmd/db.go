@@ -1,10 +1,12 @@
 package cmd
 
 import (
+	"github.com/SArtemJ/serverFPTS/api/handlers"
 	"github.com/SArtemJ/serverFPTS/bindata"
 	"github.com/SArtemJ/serverFPTS/configure"
 	"github.com/SArtemJ/serverFPTS/dbdriver"
 	"github.com/SArtemJ/serverFPTS/dbutils"
+	"github.com/SArtemJ/serverFPTS/repository/postgresql"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"os"
@@ -22,9 +24,6 @@ var dbCmd = &cobra.Command{
 			configure.ServiceHttp,
 			configure.ServiceDb,
 		)
-		if err != nil {
-			logrus.Fatal(err)
-		}
 
 		db, err := dbdriver.SetUpDbConnection()
 		if err != nil {
@@ -35,12 +34,25 @@ var dbCmd = &cobra.Command{
 		case "init":
 			c, err := bindata.Asset("init.sql")
 			if err != nil {
-				//
+				logrus.Fatal(err)
 				os.Exit(1)
 			}
 
 			err = dbutils.ExecBatch(db, string(c))
 			if err != nil {
+				logrus.Fatal(err)
+				os.Exit(1)
+			}
+		case "drop":
+			c, err := bindata.Asset("drop.sql")
+			if err != nil {
+				logrus.Fatal(err)
+				os.Exit(1)
+			}
+
+			err = dbutils.ExecBatch(db, string(c))
+			if err != nil {
+				logrus.Fatal(err)
 				os.Exit(1)
 			}
 		case "data":
@@ -50,12 +62,16 @@ var dbCmd = &cobra.Command{
 				"tables": tables,
 			}).Debug("List of tables in DB")
 
-			//TODO
+			repos := postgresql.GetRepositories(db)
+			err := handlers.FillRepositoriesForTest(repos)
+			if err != nil {
+				logrus.Fatal(err)
+			}
 		}
 	},
 }
 
 func init() {
-	configure.NewConfigure(dbCmd, configure.ServiceDb)
+	configure.NewConfigure(dbCmd, configure.ServiceDb, configure.LogFormat)
 	rootCmd.AddCommand(dbCmd)
 }

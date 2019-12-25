@@ -1,4 +1,4 @@
-package repos
+package repository
 
 import (
 	"fmt"
@@ -199,4 +199,37 @@ func intToInterfaces(i []int64) []interface{} {
 		list = append(list, v)
 	}
 	return list
+}
+
+func TraverseQueryData(data interface{}, onCondition func(name string, op Operator, values []interface{}) error, onGroup func(groupType Operator, data interface{}) error) error {
+	if data == nil {
+		return nil
+	}
+	conditions, ok := data.([]E)
+	if !ok {
+		return nil
+	}
+	for _, condition := range conditions {
+		switch op := Operator(condition.Key); op {
+		case And, Or:
+			err := onGroup(op, condition.Value)
+			if err != nil {
+				return err
+			}
+			continue
+		}
+		values := condition.Value
+		op := Equal
+		if opWithValues, ok := values.(E); ok {
+			op, values = Operator(opWithValues.Key), opWithValues.Value
+		}
+		if _, ok := values.([]interface{}); !ok {
+			values = []interface{}{values}
+		}
+		err := onCondition(condition.Key, op, values.([]interface{}))
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

@@ -15,17 +15,17 @@ import (
 // PostTransactionMethodNotAllowedBody post transaction method not allowed body
 // swagger:model postTransactionMethodNotAllowedBody
 type PostTransactionMethodNotAllowedBody struct {
-	Error405Data
+	ErrorData
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
 func (m *PostTransactionMethodNotAllowedBody) UnmarshalJSON(raw []byte) error {
 	// AO0
-	var aO0 Error405Data
+	var aO0 ErrorData
 	if err := swag.ReadJSON(raw, &aO0); err != nil {
 		return err
 	}
-	m.Error405Data = aO0
+	m.ErrorData = aO0
 
 	return nil
 }
@@ -34,7 +34,7 @@ func (m *PostTransactionMethodNotAllowedBody) UnmarshalJSON(raw []byte) error {
 func (m PostTransactionMethodNotAllowedBody) MarshalJSON() ([]byte, error) {
 	_parts := make([][]byte, 0, 1)
 
-	aO0, err := swag.WriteJSON(m.Error405Data)
+	aO0, err := swag.WriteJSON(m.ErrorData)
 	if err != nil {
 		return nil, err
 	}
@@ -47,8 +47,8 @@ func (m PostTransactionMethodNotAllowedBody) MarshalJSON() ([]byte, error) {
 func (m *PostTransactionMethodNotAllowedBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	// validation for a type composition with Error405Data
-	if err := m.Error405Data.Validate(formats); err != nil {
+	// validation for a type composition with ErrorData
+	if err := m.ErrorData.Validate(formats); err != nil {
 		res = append(res, err)
 	}
 

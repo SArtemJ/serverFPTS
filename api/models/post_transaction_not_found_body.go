@@ -15,17 +15,17 @@ import (
 // PostTransactionNotFoundBody post transaction not found body
 // swagger:model postTransactionNotFoundBody
 type PostTransactionNotFoundBody struct {
-	Error404Data
+	ErrorData
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
 func (m *PostTransactionNotFoundBody) UnmarshalJSON(raw []byte) error {
 	// AO0
-	var aO0 Error404Data
+	var aO0 ErrorData
 	if err := swag.ReadJSON(raw, &aO0); err != nil {
 		return err
 	}
-	m.Error404Data = aO0
+	m.ErrorData = aO0
 
 	return nil
 }
@@ -34,7 +34,7 @@ func (m *PostTransactionNotFoundBody) UnmarshalJSON(raw []byte) error {
 func (m PostTransactionNotFoundBody) MarshalJSON() ([]byte, error) {
 	_parts := make([][]byte, 0, 1)
 
-	aO0, err := swag.WriteJSON(m.Error404Data)
+	aO0, err := swag.WriteJSON(m.ErrorData)
 	if err != nil {
 		return nil, err
 	}
@@ -47,8 +47,8 @@ func (m PostTransactionNotFoundBody) MarshalJSON() ([]byte, error) {
 func (m *PostTransactionNotFoundBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	// validation for a type composition with Error404Data
-	if err := m.Error404Data.Validate(formats); err != nil {
+	// validation for a type composition with ErrorData
+	if err := m.ErrorData.Validate(formats); err != nil {
 		res = append(res, err)
 	}
 

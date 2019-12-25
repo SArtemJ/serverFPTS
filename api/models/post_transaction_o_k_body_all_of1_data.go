@@ -15,17 +15,17 @@ import (
 // PostTransactionOKBodyAllOf1Data post transaction o k body all of1 data
 // swagger:model postTransactionOKBodyAllOf1Data
 type PostTransactionOKBodyAllOf1Data struct {
-	TransactionObject
+	ResponseObject
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
 func (m *PostTransactionOKBodyAllOf1Data) UnmarshalJSON(raw []byte) error {
 	// AO0
-	var aO0 TransactionObject
+	var aO0 ResponseObject
 	if err := swag.ReadJSON(raw, &aO0); err != nil {
 		return err
 	}
-	m.TransactionObject = aO0
+	m.ResponseObject = aO0
 
 	return nil
 }
@@ -34,7 +34,7 @@ func (m *PostTransactionOKBodyAllOf1Data) UnmarshalJSON(raw []byte) error {
 func (m PostTransactionOKBodyAllOf1Data) MarshalJSON() ([]byte, error) {
 	_parts := make([][]byte, 0, 1)
 
-	aO0, err := swag.WriteJSON(m.TransactionObject)
+	aO0, err := swag.WriteJSON(m.ResponseObject)
 	if err != nil {
 		return nil, err
 	}
@@ -47,8 +47,8 @@ func (m PostTransactionOKBodyAllOf1Data) MarshalJSON() ([]byte, error) {
 func (m *PostTransactionOKBodyAllOf1Data) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	// validation for a type composition with TransactionObject
-	if err := m.TransactionObject.Validate(formats); err != nil {
+	// validation for a type composition with ResponseObject
+	if err := m.ResponseObject.Validate(formats); err != nil {
 		res = append(res, err)
 	}
 

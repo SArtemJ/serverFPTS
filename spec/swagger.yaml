@@ -10,10 +10,10 @@ host: "some.fpts.lan"
 basePath: /
 
 parameters:
-  source-type:
+  Source-Type:
     name: Source-Type
     in: header
-    description: "source-type value"
+    description: "Source-Type"
     type: string
     required: true
 
@@ -21,7 +21,7 @@ paths:
   /transaction:
     post:
       parameters:
-        - $ref: "#/parameters/source-type"
+        - $ref: "#/parameters/Source-Type"
         - name: body
           in: body
           required: true
@@ -57,7 +57,7 @@ responses:
             data:
               type: object
               allOf:
-                - $ref: "#/definitions/Transaction_object"
+                - $ref: "#/definitions/Response_object"
           required:
             - data
 
@@ -65,114 +65,67 @@ responses:
     description: "Invalid transactionID"
     schema:
       allOf:
-        - $ref: "#/definitions/Error_400_data"
-        - type: object
-          properties:
-            message:
-              type: string
-              example: "TransactionID already exist"
-            errors:
-              type: object
-              properties:
-                transactionID:
-                  type: string
-          required:
-            - message
-            - errors
+        - $ref: "#/definitions/Error_data"
 
   Base_response_404:
     description: "Not found"
     schema:
       allOf:
-        - $ref: "#/definitions/Error_404_data"
+        - $ref: "#/definitions/Error_data"
 
   Base_response_405:
     description: "Invalid Method"
     schema:
       allOf:
-        - $ref: "#/definitions/Error_405_data"
+        - $ref: "#/definitions/Error_data"
 
   Base_response_500:
     description: "Internal server error"
     schema:
       allOf:
-        - $ref: "#/definitions/Error_500_data"
+        - $ref: "#/definitions/Error_data"
 
 definitions:
   Success_data:
-    description: Done
-    type: object
-    title: Success_data
-    properties:
-      message:
-        type: string
-        example: "SUCCESS"
-    required:
-      - message
-
-  Error_400_data:
     allOf:
       - type: object
-        title: Error_Error_400_data
+        title: Success_data
         properties:
           message:
             type: string
-            example: "Validation error"
-          errors:
-            type: array
-            items: {}
+            example: "SUCCESS"
         required:
           - message
           - errors
 
-  Error_404_data:
+  Error_data:
     allOf:
       - type: object
-        title: Error_Error_404_data
         properties:
           message:
             type: string
-            example: "Not found"
+            example: "error name"
           errors:
-            type: array
-            items: {}
-            example: null
+            type: string
+            example: "error reason"
         required:
           - message
           - errors
 
-  Error_405_data:
-    allOf:
-      - type: object
-        title: Error_Error_405_data
-        properties:
-          message:
-            type: string
-            example: "Method ${METHOD} not allowed"
-          errors:
-            example: null
-
-  Error_500_data:
-    allOf:
-      - type: object
-        title: Error_500_data
-        properties:
-          message:
-            type: string
-            example: "Internal server error"
-          errors:
-            example: null
-        required:
-          - message
-          - errors
 
   Transaction_object:
     title: Transaction_object
     properties:
+      userGUID:
+        type: string
+        description: "userGUID"
+        example: "05b342e7-e60f-43b0-bbd4-2c822df3e637"
+        format: uuid
       transactionID:
         type: string
         description: "transactionID"
         example: "a3190bfc-593c-49c4-95b1-82e91ec3d022"
+        format: uuid
       state:
         type: string
         description: "state"
@@ -182,6 +135,31 @@ definitions:
         description: "amount"
         example: "10.15"
     required:
+      - userGUID
       - transactionID
       - state
       - amount
+
+  Response_object:
+    title: Response_object
+    properties:
+      userGUID:
+        type: string
+        description: "userGUID"
+        example: "05b342e7-e60f-43b0-bbd4-2c822df3e637"
+        format: uuid
+      state:
+        type: string
+        description: "state"
+        example: "win"
+      amount:
+        type: string
+        description: "amount"
+        example: "10.15"
+      wallet:
+        type: string
+        description: "wallet info"
+        example: "100.15"
+    required:
+      - userGUID
+      - wallet

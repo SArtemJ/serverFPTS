@@ -1,4 +1,4 @@
-package repos
+package repository
 
 import (
 	"gopkg.in/guregu/null.v3"
@@ -6,11 +6,10 @@ import (
 
 type BaseModel struct {
 	Created null.Time `db:"created"`
-	Updated null.Time `db:"updated"`
 }
 
 type Repositories struct {
-	Users        UsersRepo
-	Transactions TransactionsRepo
-	Source       SourcesRepo
+	Users        UsersRepository
+	Transactions TransactionsRepository
+	Sources      SourcesRepository
 }

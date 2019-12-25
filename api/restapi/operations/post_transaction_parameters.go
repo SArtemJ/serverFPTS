@@ -35,7 +35,7 @@ type PostTransactionParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*source-type value
+	/*Source-Type
 	  Required: true
 	  In: header
 	*/

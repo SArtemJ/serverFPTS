@@ -1,54 +1,97 @@
 version: "3"
 networks:
-  server_fpts:
+  fpts:
 
 services:
-  db_test_data:
+  init_db:
     build:
       context: ./
       dockerfile: Dockerfile
-    container_name: db_test_data
+    container_name: init_db
     networks:
-      - server_fpts
+      - fpts
     depends_on:
-      - db_postgres
+      - db
     environment:
-      - FPTS_DB_HOST=db_postgres
+      - FPTS_LOG_LEVEL=DEBUG
+      - FPTS_DB_HOST=db
       - FPTS_DB_PORT=5432
       - FPTS_DB_LOGIN=top
-      - FPTS_DB_PASSWORD=secret
+      - FPTS_DB_PASS=secret
       - FPTS_DB_NAME=fpts
     ports:
       - 8585:8585
-    command: db testdata
+    command: db init
 
-  server_fptsapi:
+  data_db:
     build:
       context: ./
       dockerfile: Dockerfile
-    container_name: server_fpts_api
+    container_name: data_db
     networks:
-      - server_fpts
+      - fpts
     depends_on:
-      - db_postgres
+      - db
     environment:
-      - FPTS_HTTP_HOST=0.0.0.0
-      - FPTS_HTTP_PORT=8585
+      - FPTS_LOG_LEVEL=DEBUG
       - FPTS_DB_HOST=db
-      - FPTS_DB_PORT=26257
+      - FPTS_DB_PORT=5432
+      - FPTS_DB_LOGIN=top
+      - FPTS_DB_PASS=secret
+      - FPTS_DB_NAME=fpts
+    ports:
+      - 8585:8585
+    command: db data
+
+  drop_db:
+      build:
+        context: ./
+        dockerfile: Dockerfile
+      container_name: drop_db
+      networks:
+        - fpts
+      depends_on:
+        - db
+      environment:
+        - FPTS_LOG_LEVEL=DEBUG
+        - FPTS_DB_HOST=db
+        - FPTS_DB_PORT=5432
+        - FPTS_DB_LOGIN=top
+        - FPTS_DB_PASS=secret
+        - FPTS_DB_NAME=fpts
+      ports:
+        - 8585:8585
+      command: db drop
+
+  fpts:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: fpts
+    networks:
+      - fpts
+    depends_on:
+      - db
+    environment:
+      - FPTS_LOG_LEVEL=DEBUG
+      - FPTS_HTTP_HOST=0.0.0.0
+      - FPTS_HTTP_PORT=8099
+      - FPTS_DB_HOST=db
+      - FPTS_DB_PORT=5432
       - FPTS_DB_NAME=fpts
       - FPTS_DB_LOGIN=top
-      - FPTS_DB_PASSWORD=secret
+      - FPTS_DB_PASS=secret
     ports:
       - 8099:8099
 
-  db_postgres:
+  db:
     image: postgres
     restart: always
     networks:
-      - server_fpts
+      - fpts
     ports:
       - 5432:5432
     environment:
+      POSTGRES_DB: fpts
       POSTGRES_USER: top
       POSTGRES_PASSWORD: secret

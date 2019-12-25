@@ -4,19 +4,20 @@ package restapi
 
 import (
 	"crypto/tls"
-	"database/sql"
+	"github.com/SArtemJ/serverFPTS/api/handlers"
+	"github.com/SArtemJ/serverFPTS/calculate"
+	"github.com/SArtemJ/serverFPTS/repository"
 	"net/http"
 
+	"github.com/SArtemJ/serverFPTS/api/restapi/operations"
 	errors "github.com/go-openapi/errors"
 	runtime "github.com/go-openapi/runtime"
-	middleware "github.com/go-openapi/runtime/middleware"
-
-	"github.com/SArtemJ/serverFPTS/api/restapi/operations"
 )
 
 //go:generate swagger generate server --target ../../api --name FPTS --spec ../../spec/swagger.yaml --exclude-main
 
-var Db *sql.DB
+var Repos *repository.Repositories
+var Calc *calculate.WalletCalculate
 
 func configureFlags(api *operations.FPTSAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
@@ -33,14 +34,10 @@ func configureAPI(api *operations.FPTSAPI) http.Handler {
 	// api.Logger = log.Printf
 
 	api.JSONConsumer = runtime.JSONConsumer()
-
 	api.JSONProducer = runtime.JSONProducer()
 
-	if api.PostTransactionHandler == nil {
-		api.PostTransactionHandler = operations.PostTransactionHandlerFunc(func(params operations.PostTransactionParams) middleware.Responder {
-			return middleware.NotImplemented("operation .PostTransaction has not yet been implemented")
-		})
-	}
+	th := handlers.NewTransactionHandlers(Repos, Calc)
+	api.PostTransactionHandler = operations.PostTransactionHandlerFunc(th.NewPostTransaction)
 
 	api.ServerShutdown = func() {}
 

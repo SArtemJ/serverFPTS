@@ -1,40 +1,40 @@
 CREATE TABLE users (
+    "id" serial NOT NULL,
     "guid" uuid NOT NULL UNIQUE,
     "created"  timestamptz NOT NULL,
-    "updated"  timestamptz NULL,
-    "gender" varchar NOT NULL check (
-        "gender" = 'male'
-        or "gender" = 'female'
-    ),
     "email" varchar NOT NULL,
-    "wallet" numeric NULL,
+    "wallet" numeric NOT NULL,
 
-    CONSTRAINT user_pk PRIMARY KEY ("guid")
+    CONSTRAINT users_pk PRIMARY KEY ("guid")
+);
+
+CREATE TABLE sources (
+    "id" serial NOT NULL,
+    "guid" uuid NOT NULL UNIQUE,
+    "created"  timestamptz NOT NULL,
+    "type" varchar NOT NULL check (
+        "type" = 'game'
+        or "type" = 'server'
+        or "type" = 'payment'
+    ),
+
+    CONSTRAINT sources_pk PRIMARY KEY ("guid")
 );
 
 CREATE TABLE transactions (
+    "id" serial NOT NULL,
     "guid" uuid NOT NULL UNIQUE,
     "created"  timestamptz NOT NULL,
     "state" varchar NOT NULL check (
         "state" = 'win'
         or "state" = 'lost'
     ),
-    "amount" numeric NULL,
-    "source_type" uuid NULL DEFAULT NULL REFERENCES source(guid) ON DELETE SET DEFAULT,
-    "user_guid" uuid NOT NULL REFERENCES users(guid) ON DELETE CASCADE,
+    "amount" numeric NOT NULL,
+    "source_guid" uuid NOT NULL REFERENCES sources("guid") ON DELETE RESTRICT,
+    "user_guid" uuid NOT NULL REFERENCES users("guid") ON DELETE CASCADE,
+    "done" bool NOT NULL DEFAULT true,
 
-    CONSTRAINT transaction_pk PRIMARY KEY ("guid")
+    CONSTRAINT transactions_pk PRIMARY KEY ("guid")
 );
 
-CREATE TABLE source (
-    "guid" uuid NOT NULL UNIQUE,
-    "created"  timestamptz NOT NULL,
-    "updated"  timestamptz NULL,
-    "source_type" varchar NOT NULL check (
-        "source_type" = 'game'
-        or "source_type" = 'server'
-        or "source_type" = 'payment'
-    ),
-
-    CONSTRAINT source_pk PRIMARY KEY ("guid")
-);
+CREATE INDEX transactions_idx_pk on transactions("guid");

@@ -40,7 +40,7 @@ func init() {
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/source-type"
+            "$ref": "#/parameters/Source-Type"
           },
           {
             "name": "body",
@@ -77,101 +77,79 @@ func init() {
     }
   },
   "definitions": {
-    "Error_400_data": {
+    "Error_data": {
       "allOf": [
         {
           "type": "object",
-          "title": "Error_Error_400_data",
           "required": [
             "message",
             "errors"
           ],
           "properties": {
             "errors": {
-              "type": "array",
-              "items": {}
+              "type": "string",
+              "example": "error reason"
             },
             "message": {
               "type": "string",
-              "example": "Validation error"
+              "example": "error name"
             }
           }
         }
       ]
     },
-    "Error_404_data": {
-      "allOf": [
-        {
-          "type": "object",
-          "title": "Error_Error_404_data",
-          "required": [
-            "message",
-            "errors"
-          ],
-          "properties": {
-            "errors": {
-              "type": "array",
-              "items": {}
-            },
-            "message": {
-              "type": "string",
-              "example": "Not found"
-            }
-          }
-        }
-      ]
-    },
-    "Error_405_data": {
-      "allOf": [
-        {
-          "type": "object",
-          "title": "Error_Error_405_data",
-          "properties": {
-            "errors": {},
-            "message": {
-              "type": "string",
-              "example": "Method ${METHOD} not allowed"
-            }
-          }
-        }
-      ]
-    },
-    "Error_500_data": {
-      "allOf": [
-        {
-          "type": "object",
-          "title": "Error_500_data",
-          "required": [
-            "message",
-            "errors"
-          ],
-          "properties": {
-            "errors": {},
-            "message": {
-              "type": "string",
-              "example": "Internal server error"
-            }
-          }
-        }
-      ]
-    },
-    "Success_data": {
-      "description": "Done",
-      "type": "object",
-      "title": "Success_data",
+    "Response_object": {
+      "title": "Response_object",
       "required": [
-        "message"
+        "userGUID",
+        "wallet"
       ],
       "properties": {
-        "message": {
+        "amount": {
+          "description": "amount",
           "type": "string",
-          "example": "SUCCESS"
+          "example": "10.15"
+        },
+        "state": {
+          "description": "state",
+          "type": "string",
+          "example": "win"
+        },
+        "userGUID": {
+          "description": "userGUID",
+          "type": "string",
+          "format": "uuid",
+          "example": "05b342e7-e60f-43b0-bbd4-2c822df3e637"
+        },
+        "wallet": {
+          "description": "wallet info",
+          "type": "string",
+          "example": "100.15"
         }
       }
+    },
+    "Success_data": {
+      "allOf": [
+        {
+          "type": "object",
+          "title": "Success_data",
+          "required": [
+            "message",
+            "errors"
+          ],
+          "properties": {
+            "message": {
+              "type": "string",
+              "example": "SUCCESS"
+            }
+          }
+        }
+      ]
     },
     "Transaction_object": {
       "title": "Transaction_object",
       "required": [
+        "userGUID",
         "transactionID",
         "state",
         "amount"
@@ -190,15 +168,22 @@ func init() {
         "transactionID": {
           "description": "transactionID",
           "type": "string",
+          "format": "uuid",
           "example": "a3190bfc-593c-49c4-95b1-82e91ec3d022"
+        },
+        "userGUID": {
+          "description": "userGUID",
+          "type": "string",
+          "format": "uuid",
+          "example": "05b342e7-e60f-43b0-bbd4-2c822df3e637"
         }
       }
     }
   },
   "parameters": {
-    "source-type": {
+    "Source-Type": {
       "type": "string",
-      "description": "source-type value",
+      "description": "Source-Type",
       "name": "Source-Type",
       "in": "header",
       "required": true
@@ -210,28 +195,7 @@ func init() {
       "schema": {
         "allOf": [
           {
-            "$ref": "#/definitions/Error_400_data"
-          },
-          {
-            "type": "object",
-            "required": [
-              "message",
-              "errors"
-            ],
-            "properties": {
-              "errors": {
-                "type": "object",
-                "properties": {
-                  "transactionID": {
-                    "type": "string"
-                  }
-                }
-              },
-              "message": {
-                "type": "string",
-                "example": "TransactionID already exist"
-              }
-            }
+            "$ref": "#/definitions/Error_data"
           }
         ]
       }
@@ -241,7 +205,7 @@ func init() {
       "schema": {
         "allOf": [
           {
-            "$ref": "#/definitions/Error_404_data"
+            "$ref": "#/definitions/Error_data"
           }
         ]
       }
@@ -251,7 +215,7 @@ func init() {
       "schema": {
         "allOf": [
           {
-            "$ref": "#/definitions/Error_405_data"
+            "$ref": "#/definitions/Error_data"
           }
         ]
       }
@@ -261,7 +225,7 @@ func init() {
       "schema": {
         "allOf": [
           {
-            "$ref": "#/definitions/Error_500_data"
+            "$ref": "#/definitions/Error_data"
           }
         ]
       }
@@ -283,7 +247,7 @@ func init() {
                 "type": "object",
                 "allOf": [
                   {
-                    "$ref": "#/definitions/Transaction_object"
+                    "$ref": "#/definitions/Response_object"
                   }
                 ]
               }
@@ -318,7 +282,7 @@ func init() {
         "parameters": [
           {
             "type": "string",
-            "description": "source-type value",
+            "description": "Source-Type",
             "name": "Source-Type",
             "in": "header",
             "required": true
@@ -368,51 +332,54 @@ func init() {
     }
   },
   "definitions": {
-    "Error_400_data": {
+    "Error_data": {
       "allOf": [
         {
-          "$ref": "#/definitions/error400DataAllOf0"
+          "$ref": "#/definitions/errorDataAllOf0"
         }
       ]
     },
-    "Error_404_data": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/error404DataAllOf0"
-        }
-      ]
-    },
-    "Error_405_data": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/error405DataAllOf0"
-        }
-      ]
-    },
-    "Error_500_data": {
-      "allOf": [
-        {
-          "$ref": "#/definitions/error500DataAllOf0"
-        }
-      ]
-    },
-    "Success_data": {
-      "description": "Done",
-      "type": "object",
-      "title": "Success_data",
+    "Response_object": {
+      "title": "Response_object",
       "required": [
-        "message"
+        "userGUID",
+        "wallet"
       ],
       "properties": {
-        "message": {
+        "amount": {
+          "description": "amount",
           "type": "string",
-          "example": "SUCCESS"
+          "example": "10.15"
+        },
+        "state": {
+          "description": "state",
+          "type": "string",
+          "example": "win"
+        },
+        "userGUID": {
+          "description": "userGUID",
+          "type": "string",
+          "format": "uuid",
+          "example": "05b342e7-e60f-43b0-bbd4-2c822df3e637"
+        },
+        "wallet": {
+          "description": "wallet info",
+          "type": "string",
+          "example": "100.15"
         }
       }
+    },
+    "Success_data": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/successDataAllOf0"
+        }
+      ]
     },
     "Transaction_object": {
       "title": "Transaction_object",
       "required": [
+        "userGUID",
         "transactionID",
         "state",
         "amount"
@@ -431,72 +398,31 @@ func init() {
         "transactionID": {
           "description": "transactionID",
           "type": "string",
+          "format": "uuid",
           "example": "a3190bfc-593c-49c4-95b1-82e91ec3d022"
+        },
+        "userGUID": {
+          "description": "userGUID",
+          "type": "string",
+          "format": "uuid",
+          "example": "05b342e7-e60f-43b0-bbd4-2c822df3e637"
         }
       }
     },
-    "error400DataAllOf0": {
+    "errorDataAllOf0": {
       "type": "object",
-      "title": "Error_Error_400_data",
       "required": [
         "message",
         "errors"
       ],
       "properties": {
         "errors": {
-          "type": "array",
-          "items": {}
+          "type": "string",
+          "example": "error reason"
         },
         "message": {
           "type": "string",
-          "example": "Validation error"
-        }
-      },
-      "x-go-gen-location": "models"
-    },
-    "error404DataAllOf0": {
-      "type": "object",
-      "title": "Error_Error_404_data",
-      "required": [
-        "message",
-        "errors"
-      ],
-      "properties": {
-        "errors": {
-          "type": "array",
-          "items": {}
-        },
-        "message": {
-          "type": "string",
-          "example": "Not found"
-        }
-      },
-      "x-go-gen-location": "models"
-    },
-    "error405DataAllOf0": {
-      "type": "object",
-      "title": "Error_Error_405_data",
-      "properties": {
-        "errors": {},
-        "message": {
-          "type": "string",
-          "example": "Method ${METHOD} not allowed"
-        }
-      },
-      "x-go-gen-location": "models"
-    },
-    "error500DataAllOf0": {
-      "type": "object",
-      "title": "Error_500_data",
-      "required": [
-        "message",
-        "errors"
-      ],
-      "properties": {
-        "errors": {},
-        "message": {
-          "type": "string",
-          "example": "Internal server error"
+          "example": "error name"
         }
       },
       "x-go-gen-location": "models"
@@ -504,44 +430,15 @@ func init() {
     "postTransactionBadRequestBody": {
       "allOf": [
         {
-          "$ref": "#/definitions/Error_400_data"
-        },
-        {
-          "$ref": "#/definitions/postTransactionBadRequestBodyAllOf1"
+          "$ref": "#/definitions/Error_data"
         }
       ],
-      "x-go-gen-location": "operations"
-    },
-    "postTransactionBadRequestBodyAllOf1": {
-      "type": "object",
-      "required": [
-        "message",
-        "errors"
-      ],
-      "properties": {
-        "errors": {
-          "$ref": "#/definitions/postTransactionBadRequestBodyAllOf1Errors"
-        },
-        "message": {
-          "type": "string",
-          "example": "TransactionID already exist"
-        }
-      },
-      "x-go-gen-location": "operations"
-    },
-    "postTransactionBadRequestBodyAllOf1Errors": {
-      "type": "object",
-      "properties": {
-        "transactionID": {
-          "type": "string"
-        }
-      },
       "x-go-gen-location": "operations"
     },
     "postTransactionInternalServerErrorBody": {
       "allOf": [
         {
-          "$ref": "#/definitions/Error_500_data"
+          "$ref": "#/definitions/Error_data"
         }
       ],
       "x-go-gen-location": "operations"
@@ -549,7 +446,7 @@ func init() {
     "postTransactionMethodNotAllowedBody": {
       "allOf": [
         {
-          "$ref": "#/definitions/Error_405_data"
+          "$ref": "#/definitions/Error_data"
         }
       ],
       "x-go-gen-location": "operations"
@@ -557,7 +454,7 @@ func init() {
     "postTransactionNotFoundBody": {
       "allOf": [
         {
-          "$ref": "#/definitions/Error_404_data"
+          "$ref": "#/definitions/Error_data"
         }
       ],
       "x-go-gen-location": "operations"
@@ -589,7 +486,7 @@ func init() {
       "type": "object",
       "allOf": [
         {
-          "$ref": "#/definitions/Transaction_object"
+          "$ref": "#/definitions/Response_object"
         }
       ],
       "x-go-gen-location": "operations"
@@ -602,12 +499,27 @@ func init() {
         }
       ],
       "x-go-gen-location": "operations"
+    },
+    "successDataAllOf0": {
+      "type": "object",
+      "title": "Success_data",
+      "required": [
+        "message",
+        "errors"
+      ],
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "SUCCESS"
+        }
+      },
+      "x-go-gen-location": "models"
     }
   },
   "parameters": {
-    "source-type": {
+    "Source-Type": {
       "type": "string",
-      "description": "source-type value",
+      "description": "Source-Type",
       "name": "Source-Type",
       "in": "header",
       "required": true
@@ -619,28 +531,7 @@ func init() {
       "schema": {
         "allOf": [
           {
-            "$ref": "#/definitions/Error_400_data"
-          },
-          {
-            "type": "object",
-            "required": [
-              "message",
-              "errors"
-            ],
-            "properties": {
-              "errors": {
-                "type": "object",
-                "properties": {
-                  "transactionID": {
-                    "type": "string"
-                  }
-                }
-              },
-              "message": {
-                "type": "string",
-                "example": "TransactionID already exist"
-              }
-            }
+            "$ref": "#/definitions/Error_data"
           }
         ]
       }
@@ -650,7 +541,7 @@ func init() {
       "schema": {
         "allOf": [
           {
-            "$ref": "#/definitions/Error_404_data"
+            "$ref": "#/definitions/Error_data"
           }
         ]
       }
@@ -660,7 +551,7 @@ func init() {
       "schema": {
         "allOf": [
           {
-            "$ref": "#/definitions/Error_405_data"
+            "$ref": "#/definitions/Error_data"
           }
         ]
       }
@@ -670,7 +561,7 @@ func init() {
       "schema": {
         "allOf": [
           {
-            "$ref": "#/definitions/Error_500_data"
+            "$ref": "#/definitions/Error_data"
           }
         ]
       }
@@ -692,7 +583,7 @@ func init() {
                 "type": "object",
                 "allOf": [
                   {
-                    "$ref": "#/definitions/Transaction_object"
+                    "$ref": "#/definitions/Response_object"
                   }
                 ]
               }

@@ -14,6 +14,8 @@ type serviceType int
 const (
 	ServiceHttp serviceType = iota
 	ServiceDb
+	Timer
+	LogFormat
 )
 
 func NewConfigure(cmd *cobra.Command, services ...serviceType) error {
@@ -25,10 +27,14 @@ func NewConfigure(cmd *cobra.Command, services ...serviceType) error {
 				configureHttpSrv(cmd)
 			case ServiceDb:
 				configureDb(cmd)
+			case Timer:
+				configureTimer(cmd)
+			case LogFormat:
+				logFormat(cmd)
 			}
 		}
 	} else {
-		//
+		return errors.New("ERROR - Cmd required params missing")
 	}
 
 	cmd.PreRun = func(cmd *cobra.Command, args []string) { viper.BindPFlags(cmd.Flags()) }
@@ -48,7 +54,18 @@ func configureDb(cmd *cobra.Command) {
 	cmd.Flags().String("db.pass", "", "Database pass")
 }
 
-// Validate start parameters
+func configureTimer(cmd *cobra.Command) {
+	cmd.Flags().String("timer.type", "m", "s-seconds/m-minutes/h-hours - default m")
+	cmd.Flags().Int64("timer.period", 1, "timer period - default 1 minute")
+	cmd.Flags().Int64("limit.clean", 3, "limit last transactions - default 3")
+}
+
+func logFormat(cmd *cobra.Command) {
+	cmd.Flags().String("logger.file", "STDOUT", "stdout or file")
+	cmd.Flags().String("log.level", "DEBUG", "log level")
+	cmd.Flags().String("log.fmt", "", "log format json or text")
+}
+
 func Validate(required ...serviceType) error {
 	var validErrors error
 

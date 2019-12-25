@@ -27,7 +27,13 @@ type TransactionObject struct {
 
 	// transactionID
 	// Required: true
-	TransactionID *string `json:"transactionID"`
+	// Format: uuid
+	TransactionID *strfmt.UUID `json:"transactionID"`
+
+	// userGUID
+	// Required: true
+	// Format: uuid
+	UserGUID *strfmt.UUID `json:"userGUID"`
 }
 
 // Validate validates this transaction object
@@ -43,6 +49,10 @@ func (m *TransactionObject) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateTransactionID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateUserGUID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -73,6 +83,23 @@ func (m *TransactionObject) validateState(formats strfmt.Registry) error {
 func (m *TransactionObject) validateTransactionID(formats strfmt.Registry) error {
 
 	if err := validate.Required("transactionID", "body", m.TransactionID); err != nil {
+		return err
+	}
+
+	if err := validate.FormatOf("transactionID", "body", "uuid", m.TransactionID.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *TransactionObject) validateUserGUID(formats strfmt.Registry) error {
+
+	if err := validate.Required("userGUID", "body", m.UserGUID); err != nil {
+		return err
+	}
+
+	if err := validate.FormatOf("userGUID", "body", "uuid", m.UserGUID.String(), formats); err != nil {
 		return err
 	}
 

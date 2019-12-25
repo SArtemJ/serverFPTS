@@ -5,7 +5,8 @@ RUN apk add --no-cache --update \
 RUN mkdir -p ${GOPATH}/src/${PROJECT_PATH}
 WORKDIR ${GOPATH}/src/${PROJECT_PATH}
 COPY . .
+RUN go build -o fpts .
 
-ENTRYPOINT [ "./serverFPTS" ]
+ENTRYPOINT [ "./fpts" ]
 
 EXPOSE 8099

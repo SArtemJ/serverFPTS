@@ -10,40 +10,51 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
-// SuccessData Success_data
-//
-// Done
+// SuccessData success data
 // swagger:model Success_data
 type SuccessData struct {
+	SuccessDataAllOf0
+}
 
-	// message
-	// Required: true
-	Message *string `json:"message"`
+// UnmarshalJSON unmarshals this object from a JSON structure
+func (m *SuccessData) UnmarshalJSON(raw []byte) error {
+	// AO0
+	var aO0 SuccessDataAllOf0
+	if err := swag.ReadJSON(raw, &aO0); err != nil {
+		return err
+	}
+	m.SuccessDataAllOf0 = aO0
+
+	return nil
+}
+
+// MarshalJSON marshals this object to a JSON structure
+func (m SuccessData) MarshalJSON() ([]byte, error) {
+	_parts := make([][]byte, 0, 1)
+
+	aO0, err := swag.WriteJSON(m.SuccessDataAllOf0)
+	if err != nil {
+		return nil, err
+	}
+	_parts = append(_parts, aO0)
+
+	return swag.ConcatJSON(_parts...), nil
 }
 
 // Validate validates this success data
 func (m *SuccessData) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateMessage(formats); err != nil {
+	// validation for a type composition with SuccessDataAllOf0
+	if err := m.SuccessDataAllOf0.Validate(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (m *SuccessData) validateMessage(formats strfmt.Registry) error {
-
-	if err := validate.Required("message", "body", m.Message); err != nil {
-		return err
-	}
-
 	return nil
 }
 

@@ -15,45 +15,30 @@ import (
 // PostTransactionBadRequestBody post transaction bad request body
 // swagger:model postTransactionBadRequestBody
 type PostTransactionBadRequestBody struct {
-	Error400Data
-
-	PostTransactionBadRequestBodyAllOf1
+	ErrorData
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
 func (m *PostTransactionBadRequestBody) UnmarshalJSON(raw []byte) error {
 	// AO0
-	var aO0 Error400Data
+	var aO0 ErrorData
 	if err := swag.ReadJSON(raw, &aO0); err != nil {
 		return err
 	}
-	m.Error400Data = aO0
-
-	// AO1
-	var aO1 PostTransactionBadRequestBodyAllOf1
-	if err := swag.ReadJSON(raw, &aO1); err != nil {
-		return err
-	}
-	m.PostTransactionBadRequestBodyAllOf1 = aO1
+	m.ErrorData = aO0
 
 	return nil
 }
 
 // MarshalJSON marshals this object to a JSON structure
 func (m PostTransactionBadRequestBody) MarshalJSON() ([]byte, error) {
-	_parts := make([][]byte, 0, 2)
+	_parts := make([][]byte, 0, 1)
 
-	aO0, err := swag.WriteJSON(m.Error400Data)
+	aO0, err := swag.WriteJSON(m.ErrorData)
 	if err != nil {
 		return nil, err
 	}
 	_parts = append(_parts, aO0)
-
-	aO1, err := swag.WriteJSON(m.PostTransactionBadRequestBodyAllOf1)
-	if err != nil {
-		return nil, err
-	}
-	_parts = append(_parts, aO1)
 
 	return swag.ConcatJSON(_parts...), nil
 }
@@ -62,12 +47,8 @@ func (m PostTransactionBadRequestBody) MarshalJSON() ([]byte, error) {
 func (m *PostTransactionBadRequestBody) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	// validation for a type composition with Error400Data
-	if err := m.Error400Data.Validate(formats); err != nil {
-		res = append(res, err)
-	}
-	// validation for a type composition with PostTransactionBadRequestBodyAllOf1
-	if err := m.PostTransactionBadRequestBodyAllOf1.Validate(formats); err != nil {
+	// validation for a type composition with ErrorData
+	if err := m.ErrorData.Validate(formats); err != nil {
 		res = append(res, err)
 	}
 
